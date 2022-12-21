@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.Messages
-import com.intellij.util.Consumer
 
 class TestKotlinAction : AnAction() {
     override fun actionPerformed(event: AnActionEvent) {
@@ -17,18 +16,8 @@ class TestKotlinAction : AnAction() {
         val psiElement = offset?.let { off -> file?.findElementAt(off - 1) }
         if (psiElement != null && file != null && completionProcess != null ) {
             val completionParams = CompletionParameters(psiElement, file, CompletionType.BASIC, offset, 0, editor, completionProcess)
-            val contributor = CompletionContributor.forParameters(completionParams)
-            val elements = ArrayList<String>()
-            val testConsumer: Consumer<in CompletionResult> =
-                Consumer { cons: CompletionResult ->
-                    elements.add(
-                        cons.toString()
-                    )
-                }
-            CompletionService.getCompletionService().getVariantsFromContributors(completionParams, contributor[0], testConsumer)
-            //val elementProvider = TestLookupElementProvider(contributor[0], completionParams)
-            //Messages.showErrorDialog(elementProvider.getElement(0), "LookUp Element Found!")
-            val numberOfElements = "Success! " + elements[0] + " Elements found"
+            val provider = KotlinLookupElementProvider(completionParams)
+            val numberOfElements = "Success! " + provider.elements[0] + " is first Element"
             Messages.showErrorDialog(numberOfElements, "LookUp Element Found!")
         } else {
             var message = "Failed: "

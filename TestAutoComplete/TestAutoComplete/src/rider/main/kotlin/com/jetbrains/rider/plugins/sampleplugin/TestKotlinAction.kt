@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.sampleplugin
 
+import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionService
 import com.intellij.codeInsight.completion.CompletionType
@@ -15,11 +16,14 @@ class TestKotlinAction : AnAction() {
         val file = event.getData(CommonDataKeys.PSI_FILE)
         val editor = event.getData(CommonDataKeys.EDITOR)
         val offset = editor?.caretModel?.offset
-        val psiElement = offset?.let { off -> file?.findElementAt(off) }
-        if (psiElement != null && file != null && editor != null && completionProcess != null ) {
-            val completionParams = CompletionParameters(psiElement, file, CompletionType.BASIC, 0, 0, editor, completionProcess)
-            val elementProvider = TestLookupElementProvider(completionParams)
-            Messages.showErrorDialog(elementProvider.getElement(0), "LookUp Element Found!")
+        val psiElement = offset?.let { off -> file?.findElementAt(off - 1) }
+        if (psiElement != null && file != null && completionProcess != null ) {
+            val completionParams = CompletionParameters(psiElement, file, CompletionType.BASIC, offset, 0, editor, completionProcess)
+            val contributor = CompletionContributor.forParameters(completionParams)
+            //val elementProvider = TestLookupElementProvider(completionParams)
+            //Messages.showErrorDialog(elementProvider.getElement(0), "LookUp Element Found!")
+            val numberOfContributors = "Success! " + contributor.size + " Contributors found"
+            Messages.showErrorDialog(numberOfContributors, "LookUp Element Found!")
         } else {
             var message = "Failed: "
             if (psiElement == null) message += "PSI Element null, "

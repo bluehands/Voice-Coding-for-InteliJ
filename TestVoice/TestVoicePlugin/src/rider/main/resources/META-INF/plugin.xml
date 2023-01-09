@@ -12,4 +12,16 @@
 ]]>
   </description>
 
+    <actions>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestRecordingAction"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestRecordingAction" text="Test Audio Recording"
+                description="Test Audio Recording from Microphone">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestTranscribeAudio"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestTranscribeAudio" text="Test Cloud Transcription"
+                description="Test Google Cloud Stream Transcript">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>

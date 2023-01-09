@@ -6,13 +6,12 @@ import com.intellij.codeInsight.completion.CompletionResult
 import com.intellij.codeInsight.completion.CompletionService
 import com.intellij.util.Consumer
 
-class KotlinLookupElementProvider {
+class KotlinLookupElementProvider(parameters: CompletionParameters) {
     val elements = ArrayList<String>()
-    private lateinit var _contributors: MutableList<CompletionContributor>
-    private lateinit var _parameters: CompletionParameters
+    private var _contributors: MutableList<CompletionContributor>
+    private var _parameters: CompletionParameters = parameters
 
-    constructor(parameters: CompletionParameters) {
-        _parameters = parameters
+    init {
         _contributors = CompletionContributor.forParameters(parameters)
         fillElementsList()
     }

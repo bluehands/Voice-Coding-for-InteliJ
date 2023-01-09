@@ -13,12 +13,6 @@
   </description>
 
     <actions>
-        <action id="com.jetbrains.rider.plugins.sampleplugin.TestJavaAction"
-                class="com.jetbrains.rider.plugins.sampleplugin.TestJavaAction"
-                text="Java Test Action"
-                description="Test Action in Java">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
         <action id="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction"
                 class="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction" text="Kotlin Test Action"
                 description="Test Kotlin Action">

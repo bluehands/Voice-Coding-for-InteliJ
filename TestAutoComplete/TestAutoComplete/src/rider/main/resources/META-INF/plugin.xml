@@ -13,16 +13,25 @@
   </description>
 
     <actions>
-        <action id="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction"
-                class="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction" text="Kotlin Test Action"
-                description="Test Kotlin Action">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl Ä"/>
-        </action>
         <action id="com.jetbrains.rider.plugins.sampleplugin.TriggerAutoComplete"
                 class="com.jetbrains.rider.plugins.sampleplugin.TriggerAutoComplete" text="Start Autocomplete Process"
                 description="Triggers Autocomplete and opens Popup">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestParallelAction"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestParallelAction" text="Test Parallel Action"
+                description="Performs stuff in multiple threads">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestKotlinAction" text="Test Kotlin Action"
+                description="Perform test action ">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
+
+    <projectListeners>
+        <listener class="com.jetbrains.rider.plugins.sampleplugin.TestLookupManagerListener"
+                  topic="com.intellij.codeInsight.lookup.LookupManagerListener"/>
+    </projectListeners>
 </idea-plugin>

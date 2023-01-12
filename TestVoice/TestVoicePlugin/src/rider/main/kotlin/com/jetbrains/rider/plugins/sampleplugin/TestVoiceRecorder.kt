@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.TargetDataLine
+import kotlin.math.sqrt
 import kotlin.system.exitProcess
 
 
@@ -14,6 +15,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
     private val _recordingTime = recordingTime
     private val _audioFile = audioFile
     private val _fileType = AudioFileFormat.Type.WAVE
+    private val _recordingThreshhold = 1
     private lateinit var _line: TargetDataLine
 
     private fun getAudioFormat(): AudioFormat {
@@ -28,20 +30,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
         )
     }
 
-    private fun startRecording() {
-        val format = getAudioFormat()
-        val info = DataLine.Info(TargetDataLine::class.java, format)
-
-        if (!AudioSystem.isLineSupported(info)) {
-            Messages.showErrorDialog("Line not supported", "Error")
-            exitProcess(0)
-        }
-        _line = AudioSystem.getLine(info) as TargetDataLine
-        _line.open(format)
-        _line.start()
-
-        val audioInputStream = AudioInputStream(_line)
-
+    private fun startRecording(audioInputStream: AudioInputStream) {
         AudioSystem.write(audioInputStream, _fileType, _audioFile)
     }
 
@@ -52,14 +41,51 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
     }
 
     fun recordAudio() {
-         val stopper = Thread {
+        val stopper = Thread {
             run() {
                 Thread.sleep(_recordingTime)
                 stopRecording()
             }
         }
+        val audioInputStream = startAudioInputStream()
+        while (true) {
+            if (detectNoise(audioInputStream)) break
+        }
         stopper.start()
-        startRecording()
+        startRecording(audioInputStream)
+        return
+    }
+
+    private fun detectNoise(audioInputStream: AudioInputStream): Boolean {
+        val buffer = ByteArray(5000)
+        audioInputStream.read(buffer)
+        return calculateVolumeLevelRMS(buffer) > _recordingThreshhold
+    }
+
+    private fun calculateVolumeLevelRMS(audioBuffer: ByteArray): Double {
+        val elementCount = audioBuffer.size
+        var squareSum = 0.0
+        for (i in audioBuffer) {
+            squareSum += i * i
+        }
+        return sqrt((squareSum / elementCount))
+    }
+
+
+    private fun startAudioInputStream(): AudioInputStream {
+        val format = getAudioFormat()
+
+        val info = DataLine.Info(TargetDataLine::class.java, format)
+
+        if (!AudioSystem.isLineSupported(info)) {
+            Messages.showErrorDialog("Line not supported", "Error")
+            exitProcess(0)
+        }
+        _line = AudioSystem.getLine(info) as TargetDataLine
+        _line.open(format)
+        _line.start()
+
+        return AudioInputStream(_line)
     }
 
 }

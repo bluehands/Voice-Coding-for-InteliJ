@@ -19,6 +19,7 @@ ext {
 repositories {
     maven { url 'https://cache-redirector.jetbrains.com/intellij-repository/snapshots' }
     maven { url 'https://cache-redirector.jetbrains.com/maven-central' }
+    maven { url "https://azureai.azureedge.net/maven/"  }
 }
 
 wrapper {

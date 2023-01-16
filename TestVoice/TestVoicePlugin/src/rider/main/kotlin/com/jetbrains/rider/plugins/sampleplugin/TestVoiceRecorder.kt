@@ -15,7 +15,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
     private val _recordingTime = recordingTime
     private val _audioFile = audioFile
     private val _fileType = AudioFileFormat.Type.WAVE
-    private val _recordingThreshhold = 1
+    private val _recordingThreshold = 1
     private lateinit var _line: TargetDataLine
 
     private fun getAudioFormat(): AudioFormat {
@@ -42,7 +42,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
 
     fun recordAudio() {
         val stopper = Thread {
-            run() {
+            run {
                 Thread.sleep(_recordingTime)
                 stopRecording()
             }
@@ -59,7 +59,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
     private fun detectNoise(audioInputStream: AudioInputStream): Boolean {
         val buffer = ByteArray(5000)
         audioInputStream.read(buffer)
-        return calculateVolumeLevelRMS(buffer) > _recordingThreshhold
+        return calculateVolumeLevelRMS(buffer) > _recordingThreshold
     }
 
     private fun calculateVolumeLevelRMS(audioBuffer: ByteArray): Double {

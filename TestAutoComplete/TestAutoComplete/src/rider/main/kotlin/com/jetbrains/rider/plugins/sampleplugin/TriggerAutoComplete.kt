@@ -11,6 +11,7 @@ class TriggerAutoComplete : AnAction() {
         val editor = event.getData(CommonDataKeys.EDITOR)
         val project = event.project
         val popupController = project?.let { AutoPopupController.getInstance(it) }
+        TestObject.toggleBool()
         popupController?.scheduleAutoPopup(editor)
     }
 }

@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import java.io.File
 
 
-const val audioFilePath = "E:/TestAudio.wav"
+const val audioFilePath = "F:/TestAudio.wav"
 class TestRecordingAction: AnAction() {
     override fun actionPerformed(actionParameters: AnActionEvent) {
         val audioFile = File(audioFilePath)

@@ -19,8 +19,8 @@ class TestKotlinAction : AnAction() {
         val psiElement = offset?.let { off -> file?.findElementAt(off - 1) }
         //val popupController = event.project?.let { AutoPopupController.getInstance(it) }
         //popupController?.scheduleAutoPopup(editor)
-
-        if ( psiElement != null && file != null && completionProcess != null) {
+        TestObject.toggleBool()
+        /*if ( psiElement != null && file != null && completionProcess != null) {
             val completionParams = CompletionParameters(psiElement, file, CompletionType.BASIC, offset, 0, editor, completionProcess)
             val provider = KotlinLookupElementProvider(completionParams)
             val numberOfElements = "Success! " + provider.elements.size + " Elements found"
@@ -32,7 +32,7 @@ class TestKotlinAction : AnAction() {
             if (completionProcess == null) message += "Process null, "
             if (editor == null) message += "Editor null"
             Messages.showErrorDialog(message, "Kotlin Title")
-        }
+        }*/
 
     }
 }

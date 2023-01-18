@@ -12,4 +12,22 @@
 ]]>
   </description>
 
+    <actions>
+        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
+                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
+                text="Toggle Coding Mode" description="Toggle coding mode on or off">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
+                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
+                text="Toggle Verbatim Mode"
+                description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction"
+                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction" text="Test Action"
+                description="Temporary action to test select functionalities">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>

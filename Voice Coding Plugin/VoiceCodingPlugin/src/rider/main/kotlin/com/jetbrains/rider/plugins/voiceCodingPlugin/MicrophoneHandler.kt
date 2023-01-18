@@ -1,20 +1,12 @@
-package com.jetbrains.rider.plugins.sampleplugin
+package com.jetbrains.rider.plugins.voiceCodingPlugin
+
 import com.intellij.openapi.ui.Messages
 import java.io.File
-import javax.sound.sampled.AudioFileFormat
-import javax.sound.sampled.AudioFormat
-import javax.sound.sampled.AudioInputStream
-import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.DataLine
-import javax.sound.sampled.TargetDataLine
+import javax.sound.sampled.*
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
 
-
-class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
-    private val _recordingTime = recordingTime
-    private val _audioFile = audioFile
-    private val _fileType = AudioFileFormat.Type.WAVE
+class MicrophoneHandler {
     private val _recordingThreshold = 1
     private lateinit var _line: TargetDataLine
 
@@ -30,36 +22,11 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
         )
     }
 
-    private fun startRecording(audioInputStream: AudioInputStream) {
-        AudioSystem.write(audioInputStream, _fileType, _audioFile)
-    }
-
-    private fun stopRecording() {
+    fun stopRecording() {
         _line.stop()
         _line.close()
-        Messages.showErrorDialog("Finished recording", "Finished")
     }
-
-    fun recordAudio() {
-        val audioInputStream = startAudioInputStream()
-        val stopper = Thread {
-            run {
-                for (i in 0..5){
-                    Thread.sleep(_recordingTime)
-                    if(!detectNoise(audioInputStream)) break
-                }
-                stopRecording()
-            }
-        }
-        while (true) {
-            if (detectNoise(audioInputStream)) break
-        }
-        stopper.start()
-        startRecording(audioInputStream)
-        return
-    }
-
-    private fun detectNoise(audioInputStream: AudioInputStream): Boolean {
+    fun detectNoise(audioInputStream: AudioInputStream): Boolean {
         val buffer = ByteArray(5000)
         audioInputStream.read(buffer)
         return calculateVolumeLevelRMS(buffer) > _recordingThreshold
@@ -74,8 +41,7 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
         return sqrt((squareSum / elementCount))
     }
 
-
-    private fun startAudioInputStream(): AudioInputStream {
+    fun startAudioInputStream(): AudioInputStream {
         val format = getAudioFormat()
 
         val info = DataLine.Info(TargetDataLine::class.java, format)
@@ -91,4 +57,17 @@ class TestVoiceRecorder(recordingTime: Long, audioFile: File) {
         return AudioInputStream(_line)
     }
 
+    fun startRecording(fileName: String, audioInputStream: AudioInputStream) {
+        val stopper = Thread {
+            run {
+                for (i in 0..10){
+                    Thread.sleep(1000)
+                    if(!detectNoise(audioInputStream)) break
+                }
+                stopRecording()
+            }
+        }
+        stopper.start()
+        AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, File(fileName))
+    }
 }

@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResult
 import com.intellij.codeInsight.completion.CompletionService
+import com.intellij.openapi.ui.Messages
 import com.intellij.util.Consumer
 
 class KotlinLookupElementProvider(parameters: CompletionParameters) {
@@ -27,5 +28,14 @@ class KotlinLookupElementProvider(parameters: CompletionParameters) {
         for (contributor in _contributors) {
             CompletionService.getCompletionService().getVariantsFromContributors(_parameters, contributor, elementConsumer)
         }
+    }
+}
+
+object TestObject {
+    private var testBool = true
+
+    fun toggleBool(){
+        testBool = !testBool
+        Messages.showErrorDialog("Value is $testBool", "Test")
     }
 }

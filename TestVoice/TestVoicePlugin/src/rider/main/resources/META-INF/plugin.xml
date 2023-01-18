@@ -18,5 +18,10 @@
                 description="Test audio recording from microphone">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestTranscription"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestTranscription" text="Test Audio Transcription"
+                description="Test for azure transcription service">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 </idea-plugin>

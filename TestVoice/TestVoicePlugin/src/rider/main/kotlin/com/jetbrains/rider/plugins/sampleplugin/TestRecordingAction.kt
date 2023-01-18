@@ -4,7 +4,8 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import java.io.File
 
-const val audioFilePath = "F:/TestAudio.wav"
+
+const val audioFilePath = "E:/TestAudio.wav"
 class TestRecordingAction: AnAction() {
     override fun actionPerformed(actionParameters: AnActionEvent) {
         val audioFile = File(audioFilePath)
@@ -15,4 +16,5 @@ class TestRecordingAction: AnAction() {
         }
         recodingThread.start()
     }
+
 }

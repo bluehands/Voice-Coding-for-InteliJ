@@ -1,15 +1,25 @@
 package com.jetbrains.rider.plugins.voiceCodingPlugin
 
-import com.intellij.openapi.ui.Messages
+import com.microsoft.cognitiveservices.speech.SpeechConfig
+import com.microsoft.cognitiveservices.speech.audio.AudioConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 
 object VoiceController {
-    var codingMode = false
-    var verbatimMode = false
+    private var codingMode = false
+    private var verbatimMode = false
     var listeningMode = false
+    var controllerActive = false
+
+    private val subscriptionKey = File("C:/SubscriptionKey.txt").readText()
+    private val regionKey = File("C:/RegionKey.txt").readText()
+    private const val audioFileName = "F:/BufferFile.wav"
+    private val speechConfig = SpeechConfig.fromSubscription(subscriptionKey, regionKey)
+    private val audioConfig = AudioConfig.fromWavFileInput(audioFileName)
+    //private val audioConfig = AudioConfig.fromDefaultMicrophoneInput()
 
     //Turning off coding mode also disables verbatim mode
     fun toggleCodingMode() {
@@ -24,25 +34,22 @@ object VoiceController {
     }
 
     fun startListening() = runBlocking {
+        listeningMode = true
         val microphoneHandler = MicrophoneHandler()
         val audioInputStream = microphoneHandler.startAudioInputStream()
-        val audioFileName = "F:/BufferFile.wav"
         launch {
             while (true) {
-                delay (500)
+                delay (50)
                 if (microphoneHandler.detectNoise(audioInputStream)) break
             }
             microphoneHandler.startRecording(audioFileName, audioInputStream)
             if (!codingMode) {
-                //Messages.showErrorDialog("Recognize intent and perform action", "Intent Recognized")
-                IntentHandler.recognizeIntent(audioFileName)
-            }
-            else if (verbatimMode) {
-                Messages.showErrorDialog("Transcribe speech and delete whitespace.", "Verbatim Transcription")
+                IntentHandler.recognizeIntent(speechConfig, audioConfig)
             }
             else {
-                Messages.showErrorDialog("Transcribe based on autocomplete suggestion.", "Autocomplete Transcription")
+                SpeechHandler.startTranscription(speechConfig, audioConfig, verbatimMode)
             }
         }
+        listeningMode = false
     }
 }

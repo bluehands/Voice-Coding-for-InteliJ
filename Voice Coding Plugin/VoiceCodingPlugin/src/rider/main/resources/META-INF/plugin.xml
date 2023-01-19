@@ -30,4 +30,14 @@
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
     </actions>
+
+    <projectListeners>
+        <listener class="com.jetbrains.rider.plugins.voiceCodingPlugin.listeners.LookupManagerListener"
+                  topic="com.intellij.codeInsight.lookup.LookupManagerListener"/>
+    </projectListeners>
+    <applicationListeners>
+        <listener
+                class="com.jetbrains.rider.plugins.voiceCodingPlugin.listeners.ActionListener"
+                topic="com.intellij.openapi.actionSystem.ex.AnActionListener"/>
+    </applicationListeners>
 </idea-plugin>

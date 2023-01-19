@@ -27,7 +27,7 @@ class MicrophoneHandler {
         _line.close()
     }
     fun detectNoise(audioInputStream: AudioInputStream): Boolean {
-        val buffer = ByteArray(5000)
+        val buffer = ByteArray(100)
         audioInputStream.read(buffer)
         return calculateVolumeLevelRMS(buffer) > _recordingThreshold
     }

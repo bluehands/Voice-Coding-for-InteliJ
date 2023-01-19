@@ -9,6 +9,7 @@ import com.jetbrains.rider.test.scriptingApi.moveToOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 class TestParallelAction: AnAction() {
     override fun actionPerformed(p0: AnActionEvent) {
@@ -23,7 +24,15 @@ class TestParallelAction: AnAction() {
             delay(500)
             popupController?.scheduleAutoPopup(editor)
         }
-        editor?.insertString("i")
+        var test = "u _ and _ i _"
+        test = test.split(" ").joinToString(""){ it ->
+            it.replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(Locale.getDefault())
+                else it.toString()
+            }
+        }
+        test = test[0].lowercase() + test.removePrefix(test[0].toString())
+        editor?.insertString("$test")
         editor?.moveToOffset(offset + 1 )
 
     }

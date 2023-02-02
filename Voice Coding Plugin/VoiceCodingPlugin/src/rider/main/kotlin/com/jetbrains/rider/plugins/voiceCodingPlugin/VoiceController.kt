@@ -14,9 +14,9 @@ object VoiceController {
     var listeningMode = false
     var controllerActive = false
 
-    private val subscriptionKey = File("C:/SubscriptionKey.txt").readText()
-    private val regionKey = File("C:/RegionKey.txt").readText()
-    private const val audioFileName = "F:/BufferFile.wav"
+    private val subscriptionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/SubscriptionKey.txt").readText()
+    private val regionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/RegionKey.txt").readText()
+    private const val audioFileName = "C:/Users/Public/Documents/VoiceCodingPlugin/BufferFile.wav"
     private val speechConfig = SpeechConfig.fromSubscription(subscriptionKey, regionKey)
     private val audioConfig = AudioConfig.fromWavFileInput(audioFileName)
     //private val audioConfig = AudioConfig.fromDefaultMicrophoneInput()

@@ -73,6 +73,13 @@ object IntentHandler {
         }
     }
 
+    private  fun createNewFile(fileType: String, fileName: String){
+        DataManager.getInstance().dataContextFromFocusAsync.onSuccess {  context: DataContext? ->
+            val project = context?.getData(CommonDataKeys.PROJECT)
+
+        }
+    }
+
     private fun camelCaseContraction(unformattedText: String): String {
         val camelCaseString = unformattedText.split(" ").joinToString(""){ it ->
             it.replaceFirstChar {

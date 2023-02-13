@@ -27,6 +27,7 @@ class TestParallelAction: AnAction() {
         val project = event.getData(CommonDataKeys.PROJECT)
         val editor = event.getData(CommonDataKeys.EDITOR)
         val file = event.getData(CommonDataKeys.PSI_FILE)
+        val popupController = event.project?.let { AutoPopupController.getInstance(it) }
 
         val actionHandler = ShowIntentionActionsHandler()
         val caret = editor?.caretModel
@@ -35,8 +36,7 @@ class TestParallelAction: AnAction() {
         val node = psiElement?.node
         val nodeOffset = node?.startOffset ?: 0
         val nodeTextLength = node?.textLength ?: 1
-        val popupController = event.project?.let { AutoPopupController.getInstance(it) }
-        val directory = file?.containingDirectory
+        /*val directory = file?.containingDirectory
         val fileFactory = PsiFileFactory.getInstance(project)
         val cSharpLang = file?.language
         if (cSharpLang != null && directory != null) {
@@ -44,11 +44,11 @@ class TestParallelAction: AnAction() {
             directory.add(newFile)
         }
 
-        /*launch {
+        launch {
             delay(500)
             popupController?.scheduleAutoPopup(editor)
-        }*/
-
+        }
+*/
         /*var test = "u _ and _ i _"
         test = test.split(" ").joinToString(""){ it ->
             it.replaceFirstChar {

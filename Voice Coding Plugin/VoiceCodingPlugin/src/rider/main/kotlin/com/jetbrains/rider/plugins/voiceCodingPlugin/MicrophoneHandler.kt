@@ -22,7 +22,7 @@ class MicrophoneHandler {
         )
     }
 
-    private fun stopRecording() {
+    fun stopRecording() {
         _line.stop()
         _line.close()
     }

@@ -6,7 +6,7 @@ import com.jetbrains.rider.plugins.voiceCodingPlugin.VoiceController
 
 class TestAction: AnAction() {
     override fun actionPerformed(p0: AnActionEvent) {
-        VoiceController.controllerActive = !VoiceController.controllerActive
+        VoiceController.toggleController()
     }
 
 }

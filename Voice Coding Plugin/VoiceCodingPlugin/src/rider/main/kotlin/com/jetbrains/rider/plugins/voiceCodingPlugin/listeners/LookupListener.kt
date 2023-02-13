@@ -7,7 +7,7 @@ import com.jetbrains.rider.plugins.voiceCodingPlugin.Logger
 import com.jetbrains.rider.plugins.voiceCodingPlugin.SpeechHandler
 
 class LookupListener: LookupListener {
-    private lateinit var _lookup: Lookup
+    private var _lookup: Lookup? = null
     private var currentCount = 0
 
     override fun lookupShown(event: LookupEvent) {
@@ -15,11 +15,12 @@ class LookupListener: LookupListener {
     }
 
     override fun uiRefreshed() {
-        val newCount = _lookup.items.size
-        if (newCount != currentCount) currentCount = newCount
-        else if (currentCount != 0) {
+        val newCount = _lookup?.items?.size ?: 0
+        if (newCount != currentCount) {
+            currentCount = newCount
+        } else if (currentCount != 0 && _lookup != null) {
             Logger.write("Loaded autocomplete options, $currentCount found")
-            SpeechHandler.insertDictation(_lookup.items, false)
+            SpeechHandler.insertDictation(_lookup!!.items, false)
         }
     }
 }

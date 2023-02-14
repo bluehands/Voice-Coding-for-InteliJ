@@ -5,7 +5,6 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.File
 
 
 object VoiceController {
@@ -14,10 +13,8 @@ object VoiceController {
     private var listeningMode = false
     private var controllerActive = false
 
-    private val subscriptionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/SubscriptionKey.txt").readText()
-    private val regionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/RegionKey.txt").readText()
-    private const val audioFileName = "C:/Users/Public/Documents/VoiceCodingPlugin/BufferFile.wav"
-    private val speechConfig = SpeechConfig.fromSubscription(subscriptionKey, regionKey)
+    private const val audioFileName = UserParameters.audioFileName
+    private val speechConfig = SpeechConfig.fromSubscription(UserParameters.azureSubscriptionKey, UserParameters.azureRegionKey)
     private val audioConfig = AudioConfig.fromWavFileInput(audioFileName)
     //private val audioConfig = AudioConfig.fromDefaultMicrophoneInput()
 
@@ -58,7 +55,10 @@ object VoiceController {
                     SpeechHandler.startTranscription(speechConfig, audioConfig, verbatimMode)
                 }
             }
-            else Logger.write("Listening stopped.")
+            else {
+                microphoneHandler.stopRecording()
+                Logger.write("Listening stopped.")
+            }
         }
     }
 

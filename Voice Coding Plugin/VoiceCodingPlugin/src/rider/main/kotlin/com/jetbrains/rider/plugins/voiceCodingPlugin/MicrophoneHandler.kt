@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 import kotlin.system.exitProcess
 
 class MicrophoneHandler {
-    private val _recordingThreshold = 2
+    private val _recordingThreshold = UserParameters.recordingThreshold
     private lateinit var _line: TargetDataLine
 
     private fun getAudioFormat(): AudioFormat {

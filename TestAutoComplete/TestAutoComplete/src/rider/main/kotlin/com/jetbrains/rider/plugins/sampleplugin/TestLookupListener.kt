@@ -1,15 +1,11 @@
 package com.jetbrains.rider.plugins.sampleplugin
 
-import com.intellij.codeInsight.AutoPopupController
-import com.intellij.codeInsight.lookup.Lookup
-import com.intellij.codeInsight.lookup.LookupEvent
-import com.intellij.codeInsight.lookup.LookupListener
-import com.intellij.codeInsight.lookup.LookupManagerListener
-import com.intellij.ide.DataManager
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.ui.Messages
-import com.jetbrains.rd.platform.util.project
+import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.completion.OffsetMap
+import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.editor.Editor
+import com.jetbrains.rdclient.editors.getPsiFile
+import kotlin.properties.Delegates
 
 class TestLookupManagerListener: LookupManagerListener {
     override fun activeLookupChanged(old: Lookup?, new: Lookup?) {
@@ -20,17 +16,19 @@ class TestLookupManagerListener: LookupManagerListener {
 }
 
 class TestLookupListener: LookupListener {
-    private lateinit var _lookup: Lookup
+    private var _lookup: Lookup? = null
+    private var _completionChar by Delegates.notNull<Char>()
     private var currentCount = 0
     override fun lookupShown(event: LookupEvent) {
         _lookup = event.lookup
+        _completionChar = event.completionChar
     }
 
     override fun uiRefreshed() {
         //wenn sich die Möglichkeiten ändern
-        val newCount = _lookup.items.size
+        val newCount = _lookup?.items?.size ?: 0
         if (newCount != currentCount) currentCount = newCount
-        else {
+        else if (currentCount > 0 && _lookup != null) {
             /*DataManager.getInstance().dataContextFromFocusAsync.onSuccess { context: DataContext? ->
                 if (context != null) {
                     val editor = context.getData(CommonDataKeys.EDITOR)
@@ -38,7 +36,13 @@ class TestLookupListener: LookupListener {
                     editor?.caretModel?.moveCaretRelatively(-1,0, false, false, true)
                 }
             }*/
-            Messages.showErrorDialog("$currentCount elements found!", "Lookup")
+            val editor = _lookup!!.editor
+            val file = editor.getPsiFile()
+            val offset = OffsetMap(editor.document)
+            val elementArray: Array<LookupElement> = _lookup!!.items.toTypedArray()
+            val context = InsertionContext(offset, _completionChar, elementArray, file!!, editor, true)
+            _lookup!!.items[0].handleInsert(context)
+            //Messages.showErrorDialog("$currentCount elements found!", "Lookup")
         }
     }
 }

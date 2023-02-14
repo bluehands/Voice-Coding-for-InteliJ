@@ -17,13 +17,12 @@ class TestKotlinAction : AnAction() {
         val caret = editor?.caretModel
         val caretOffset = caret?.offset ?: 0
         val project = event.getData(CommonDataKeys.PROJECT)
-        //val completionProcess = CompletionService.getCompletionService().currentCompletion
+        val completionProcess = CompletionService.getCompletionService().currentCompletion
         //val psiElement = event.getData(CommonDataKeys.PSI_ELEMENT)
         val psiElement = caretOffset?.let { off -> file?.findElementAt(off - 1) }
         val node = psiElement?.node
         val nodeOffset = node?.startOffset ?: 0
         val nodeTextLength = node?.textLength ?: 1
-
         //val popupController = event.project?.let { AutoPopupController.getInstance(it) }
         //popupController?.scheduleAutoPopup(editor)
         //TestObject.toggleBool()
@@ -33,7 +32,6 @@ class TestKotlinAction : AnAction() {
         if (directory != null) {
             val newFile = CreateFileAction.findOrCreateSubdirectory(directory, "Test").createFile("Test.cs")
             directory.add(newFile)
-
         }
         //val project = event.project?.solution.
         //val help = ShowIntentionActionsAction()

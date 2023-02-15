@@ -1,34 +1,40 @@
 <idea-plugin require-restart="true">
   <id>com.jetbrains.rider.plugins.voicecodingplugin</id>
   <name>VoiceCodingPlugin</name>
-  <version>_PLACEHOLDER_</version>
+  <version>0.7</version>
   <vendor url="https://project-url">Author</vendor>
-  <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />
+  <idea-version since-build="#IU-223.7571.182"/> <!-- until-build="_PLACEHOLDER_" -->
   <depends>com.intellij.modules.rider</depends>
 
-  <description>
-<![CDATA[
-<p>Sample description</p>
-]]>
-  </description>
+  <!-- description -->
+<!-- [CDATA[
+<p>"This Plugin let's you "</p>
+]] -->
+  <!--/description -->
 
     <actions>
-        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
-                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
-                text="Toggle Coding Mode" description="Toggle coding mode on or off">
+        <group
+            id="org.intellij.sdk.action.GroupedActions"
+            text="VoiceCodingPlugin"
+            popup="true">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
-        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
-                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
-                text="Toggle Verbatim Mode"
-                description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
-        <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction"
-                class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction" text="Test Action"
-                description="Temporary action to test select functionalities">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVerbatimModeAction"
+                    text="Toggle Verbatim Mode"
+                    description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt D"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction" text="Start/Stop VoiceCodingPlugin"
+                    description="Start/Stop listening to the microphone for voice input.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
+                    text="Toggle Coding Mode" description="Toggle Coding Mode on or off.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
+            </action>
+        </group>
     </actions>
 
     <projectListeners>

@@ -8,7 +8,7 @@ import kotlinx.coroutines.runBlocking
 
 
 object VoiceController {
-    private var codingMode = false
+    private var codingMode = true
     private var verbatimMode = false
     private var listeningMode = false
     private var controllerActive = false

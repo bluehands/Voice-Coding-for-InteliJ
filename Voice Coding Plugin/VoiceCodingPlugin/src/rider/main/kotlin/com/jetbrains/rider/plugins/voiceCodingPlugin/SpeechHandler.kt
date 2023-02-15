@@ -108,8 +108,8 @@ object SpeechHandler {
         transcriptionString = transcriptionString.replace("!", "")
         Logger.write("Searching for $transcriptionString.")
         if (autocompleteItems != null && context != null && transcriptionString != ""){
+            val elementStringList: MutableList<String> = mutableListOf()
             for (index in autocompleteItems.indices) {
-            //autocompleteItems.forEachIndexed { index, element ->
                 val element = autocompleteItems[index]
                 val elementString = element.toString().lowercase()
                 if (elementString == transcriptionString) {
@@ -123,6 +123,7 @@ object SpeechHandler {
                     code = element.toString()
                     elementIndex = index
                 }
+                if (subStringOccurrences == 0) elementStringList.add(elementString)
             }
             if (!exactMatch) {
                 Logger.write("$subStringOccurrences occurrences of $transcriptionString found.")
@@ -134,6 +135,7 @@ object SpeechHandler {
                     autocompleteItems[elementIndex].handleInsert(context)
                 }
                 else {
+                    findClosestMatch(transcription, elementStringList)
                     Logger.write("ToDo: Try to match with distance.")
                 }
             }
@@ -145,5 +147,15 @@ object SpeechHandler {
             Logger.write("Error: Missing Elements or Context.")
         }
         return code
+    }
+
+    private fun findClosestMatch (transcription: String, autocompleteStrings: List<String>): String {
+        for (index in autocompleteStrings.indices) {
+            val element = autocompleteStrings[index]
+            if (element.length >= transcription.length) {
+                return "a"
+            }
+        }
+        return ""
     }
 }

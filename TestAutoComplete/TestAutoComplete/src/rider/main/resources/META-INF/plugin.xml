@@ -28,6 +28,11 @@
                 description="Perform test action ">
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+        <action id="com.jetbrains.rider.plugins.sampleplugin.TestDistanceAction"
+                class="com.jetbrains.rider.plugins.sampleplugin.TestDistanceAction" text="Test Distance"
+                description="Calculate the distance to any substring of &quot;Bruttosozialprodukt&quot;">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
     </actions>
 
     <projectListeners>

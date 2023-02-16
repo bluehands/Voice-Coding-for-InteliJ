@@ -1,10 +1,9 @@
 package com.jetbrains.rider.plugins.sampleplugin
 
-import com.intellij.codeInsight.completion.InsertionContext
-import com.intellij.codeInsight.completion.OffsetMap
-import com.intellij.codeInsight.lookup.*
-import com.intellij.openapi.editor.Editor
-import com.jetbrains.rdclient.editors.getPsiFile
+import com.intellij.codeInsight.lookup.Lookup
+import com.intellij.codeInsight.lookup.LookupEvent
+import com.intellij.codeInsight.lookup.LookupListener
+import com.intellij.codeInsight.lookup.LookupManagerListener
 import kotlin.properties.Delegates
 
 class TestLookupManagerListener: LookupManagerListener {
@@ -36,12 +35,12 @@ class TestLookupListener: LookupListener {
                     editor?.caretModel?.moveCaretRelatively(-1,0, false, false, true)
                 }
             }*/
-            val editor = _lookup!!.editor
+            /*val editor = _lookup!!.editor
             val file = editor.getPsiFile()
             val offset = OffsetMap(editor.document)
             val elementArray: Array<LookupElement> = _lookup!!.items.toTypedArray()
             val context = InsertionContext(offset, _completionChar, elementArray, file!!, editor, true)
-            _lookup!!.items[0].handleInsert(context)
+            _lookup!!.items[0].handleInsert(context)*/
             //Messages.showErrorDialog("$currentCount elements found!", "Lookup")
         }
     }

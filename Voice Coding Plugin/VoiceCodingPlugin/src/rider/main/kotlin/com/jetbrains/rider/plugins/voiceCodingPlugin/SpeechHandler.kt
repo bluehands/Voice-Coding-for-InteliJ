@@ -23,9 +23,7 @@ object SpeechHandler {
     private var basicDeclarations = listOf("short", "int", "long", "byte", "float", "double", "String", "char",
                                         "bool", "object", "private", "public", "static", "const")
     private val homophoneChecker = Homophones(UserParameters.homophoneFile)
-    private var codeInserted = false
     fun startTranscription(speechConfig: SpeechConfig, audioConfig: AudioConfig, verbatim: Boolean) {
-        codeInserted = false
         _speechConfig = speechConfig
         _audioConfig = audioConfig
         if (verbatim) {
@@ -55,16 +53,15 @@ object SpeechHandler {
         val transcribedText = if (verbatim)  camelCaseContraction(recognitionResult)
                                 else generateCodeFromTranscription(recognitionResult, autocompleteItems, insertionContext)
         Logger.write("Text recognized: $transcribedText.")
-        if (transcribedText != "" && transcribedText != " " && !codeInserted)  {
-            DataManager.getInstance().dataContextFromFocusAsync.onSuccess {context: DataContext? ->
-                if (context != null) {
-                    val editor = context.getData(CommonDataKeys.EDITOR)
+        DataManager.getInstance().dataContextFromFocusAsync.onSuccess {context: DataContext? ->
+            if (context != null) {
+                val editor = context.getData(CommonDataKeys.EDITOR)
+                if (transcribedText != "" && transcribedText != " ") {
                     editor?.insertString(transcribedText)
-                    codeInserted = true
                     editor?.caretModel?.moveCaretRelatively(transcribedText.length, 0, false, false, true)
-                    val popupController = context.project?.let { AutoPopupController.getInstance(it) }
-                    popupController?.scheduleAutoPopup(editor)
                 }
+                val popupController = context.project?.let { AutoPopupController.getInstance(it) }
+                popupController?.scheduleAutoPopup(editor)
             }
         }
         Logger.write("Finished handling speech-to-code input.")
@@ -101,72 +98,97 @@ object SpeechHandler {
         return camelCaseString
     }
 
-    private fun generateCodeFromTranscription (transcription: String, autocompleteItems: List<LookupElement>?, context: InsertionContext?, isHomophone: Boolean = false): String {
+    private fun generateCodeFromTranscription (transcription: String, autocompleteItems: List<LookupElement>?, context: InsertionContext?): String {
         var code = ""
-        var subStringOccurrences = 0
-        var elementIndex = -1
         Logger.write("Formatting $transcription.")
-        var transcriptionString = transcription.lowercase()
-        transcriptionString = transcriptionString.replace(".", "")
-        transcriptionString = transcriptionString.replace("?", "")
-        transcriptionString = transcriptionString.replace("!", "")
-        val homophoneTranscriptions = if (!isHomophone) compilePossibleHomophones(transcriptionString)
-                                        else listOf("")
-        transcriptionString = transcriptionString.replace(" ", "")
-        Logger.write("Searching for $transcriptionString.")
-        if (autocompleteItems != null && context != null && transcriptionString != ""){
-            val elementStringList: MutableList<String> = mutableListOf()
-            for (index in autocompleteItems.indices) {
-                val element = autocompleteItems[index]
-                val elementString = element.toString().lowercase()
-                if (elementString == transcriptionString) {
-                    element.handleInsert(context)
-                    codeInserted = true
-                    Logger.write("Exact match found. Insert $elementString.")
-                    break
+        var formattedString = removePunctuation(transcription).lowercase()
+        val homophoneTranscriptions = compilePossibleHomophones(formattedString)
+        formattedString = formattedString.replace(" ", "")
+        if (formattedString != "") {
+            Logger.write("Formatted to $formattedString.")
+            val transcriptionStrings = mutableListOf(formattedString)
+            homophoneTranscriptions.forEach { homophone ->
+                if (homophone != formattedString) {
+                    transcriptionStrings.add(homophone)
+                    Logger.write("Found homophone $homophone.")
                 }
-                if (elementString.contains(transcriptionString)) {
-                    subStringOccurrences++
-                    code = element.toString()
-                    elementIndex = index
-                }
-                if (subStringOccurrences == 0) elementStringList.add(elementString)
             }
-            if (!codeInserted) {
-                Logger.write("$subStringOccurrences occurrences of $transcriptionString found.")
-                if (subStringOccurrences > 1) {
-                    code = transcriptionString
+            Logger.write("${transcriptionStrings.size} variants found.")
+            for (transcriptionString in transcriptionStrings) {
+                Logger.write("Searching for $transcriptionString.")
+                if (autocompleteItems != null && transcriptionString != "") {
+                    val autocompleteStrings: List<String> = autocompleteItems.map { it.toString() }
+                    val matchIndex = findExactMatch(autocompleteStrings, transcriptionString)
+                    if (matchIndex >= 0) {
+                        if (context != null) autocompleteItems[matchIndex].handleInsert(context)
+                        else code = autocompleteItems[matchIndex].toString()
+                        Logger.write("Single or exact match found for $transcriptionString.")
+                        break
+                    }
+                    else if (matchIndex == -1) {
+                        code = transcriptionString
+                        Logger.write("Multiple matches found, insert $transcriptionString.")
+                    }
+                    else if (matchIndex == -2) {
+                        code = findClosestMatch(transcriptionString, autocompleteStrings)
+                        Logger.write("Try to match with distance. Best match: $code")
+                    }
+                    else code = ""
                 }
-                else if (subStringOccurrences == 1) {
-                    codeInserted = true
-                    Logger.write("Directly insert Item matching $transcriptionString.")
-                    autocompleteItems[elementIndex].handleInsert(context)
+                else if (transcriptionString == "") {
+                    Logger.write("Error: Empty transcription.")
                 }
                 else {
-                    code = findClosestMatch(transcription, elementStringList)
-                    Logger.write("Try to match with distance. Best match: $code")
+                    Logger.write("Error: Missing Autocomplete-Elements.")
                 }
-            }
-        }
-        else if (transcriptionString != "") {
-            Logger.write("Error: Empty transcription.")
-        }
-        else {
-            Logger.write("Error: Missing Elements or Context.")
-        }
-        if (code == "" && homophoneTranscriptions.size > 1 && !codeInserted && !isHomophone) {
-            for (homophone in homophoneTranscriptions) {
-                code = generateCodeFromTranscription(homophone, autocompleteItems, context, true)
-                if (codeInserted) break
+                if (code != "") break
             }
         }
         return code
     }
 
+    private fun removePunctuation (string: String): String {
+        var result = string
+        result = result.replace(".", "")
+        result = result.replace(",", "")
+        result = result.replace(";", "")
+        result = result.replace("?", "")
+        result = result.replace("!", "")
+        return result
+    }
+
+    private fun findExactMatch (autocompleteItems: List<String>, transcription: String) : Int {
+        var subStringOccurrences = 0
+        var elementIndex = 0
+        for (index in autocompleteItems.indices) {
+            val element = autocompleteItems[index]
+            val elementString = element.lowercase()
+            if (elementString == transcription) {
+                subStringOccurrences = 1
+                elementIndex = index
+                Logger.write("Exact match found. Insert $elementString.")
+                break
+            }
+            else if (elementString.contains(transcription)) {
+                subStringOccurrences++
+                elementIndex = index
+                Logger.write("Substring found in $element.")
+            }
+        }
+        Logger.write("$subStringOccurrences occurrences of $transcription found.")
+        if (subStringOccurrences == 1) {
+            return elementIndex
+        }
+        if (subStringOccurrences > 1) {
+            return -1
+        }
+        return -2
+    }
+
     private fun findClosestMatch (transcription: String, autocompleteStrings: List<String>): String {
         var bestCurrentString = ""
-        var currentDistance = 99
-        var currentIndex = 99
+        var currentDistance = 999
+        var currentIndex = 999
         for (index in autocompleteStrings.indices) {
             val element = autocompleteStrings[index]
             if (element.length >= transcription.length) {

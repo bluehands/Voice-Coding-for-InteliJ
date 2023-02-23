@@ -1,6 +1,6 @@
 package com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks
 
-class MostHammingSimilarSubstring (private val primaryString: String, private val compareSubstring: String) {
+class HammingMostSimilarSubstring (private val primaryString: String, private val compareSubstring: String) : SubstringMatchingInterface {
     private var bestSubstring = ""
     private var bestHammingDistance = 99
     private var resultIndex = 0
@@ -13,15 +13,15 @@ class MostHammingSimilarSubstring (private val primaryString: String, private va
         }
     }
 
-    fun getBestSubstring(): String {
+    override fun getBestSubstring(): String {
         return bestSubstring
     }
 
-    fun getBestHammingDistance(): Int {
+    override fun getBestDistance(): Int {
         return bestHammingDistance
     }
 
-    fun getResultIndex(): Int {
+    override fun getResultIndex(): Int {
         return resultIndex
     }
     private fun findBestSubstring() {

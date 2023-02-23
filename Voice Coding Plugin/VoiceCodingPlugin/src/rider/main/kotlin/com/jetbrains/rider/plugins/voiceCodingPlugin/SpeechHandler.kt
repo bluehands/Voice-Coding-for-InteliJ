@@ -7,8 +7,9 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.jetbrains.rd.platform.util.project
+import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.DamerauLevenshteinMostSimilarSubstring
 import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.Homophones
-import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.MostHammingSimilarSubstring
+import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.HammingMostSimilarSubstring
 import com.jetbrains.rider.test.scriptingApi.insertString
 import com.microsoft.cognitiveservices.speech.PhraseListGrammar
 import com.microsoft.cognitiveservices.speech.SpeechConfig
@@ -189,12 +190,15 @@ object SpeechHandler {
         var bestCurrentString = ""
         var currentDistance = 999
         var currentIndex = 999
+        val maximumDistance = maxOf(1, transcription.length / 5)
         for (index in autocompleteStrings.indices) {
             val element = autocompleteStrings[index]
             if (element.length >= transcription.length) {
-                val mostSimilarSubstring = MostHammingSimilarSubstring(element, transcription)
+                val mostSimilarSubstring = if (UserParameters.matchingAlgorithm == MatchingAlgorithm.DamerauLevenshtein)
+                                                DamerauLevenshteinMostSimilarSubstring(element, transcription, maximumDistance)
+                                            else HammingMostSimilarSubstring(element, transcription)
                 val bestString = mostSimilarSubstring.getBestSubstring()
-                val distance = mostSimilarSubstring.getBestHammingDistance()
+                val distance = mostSimilarSubstring.getBestDistance()
                 val stringIndex = mostSimilarSubstring.getResultIndex()
                 if (distance < currentDistance || (distance == currentDistance && stringIndex < currentIndex)) {
                     bestCurrentString = bestString
@@ -203,7 +207,7 @@ object SpeechHandler {
                 }
             }
         }
-        return if (currentDistance <= 1 || currentDistance <= transcription.length / 5) bestCurrentString
+        return if (currentDistance <= maximumDistance) bestCurrentString
                 else ""
     }
 

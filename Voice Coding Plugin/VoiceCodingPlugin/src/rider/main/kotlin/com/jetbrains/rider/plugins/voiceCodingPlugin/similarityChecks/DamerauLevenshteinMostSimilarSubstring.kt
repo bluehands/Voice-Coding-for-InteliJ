@@ -1,7 +1,7 @@
 package com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks
 
 class DamerauLevenshteinMostSimilarSubstring (private val primaryString: String, private val compareSubstring: String,
-                                            private val maximumSubstringLength: Int) : SubstringMatchingInterface {
+                                            private val maximumDistance: Int) : SubstringMatchingInterface {
     private var bestSubstring = ""
     private var bestDistance = 99
     private var resultIndex = 0
@@ -10,6 +10,10 @@ class DamerauLevenshteinMostSimilarSubstring (private val primaryString: String,
 
     init {
         if ( compareStringLength in 1..primaryStringLength) findBestSubstringAnyLength()
+        else if (compareStringLength - primaryStringLength in 1 .. maximumDistance) {
+            bestSubstring = primaryString
+            bestDistance = calculateDistance(primaryString, compareSubstring)
+        }
     }
     override fun getBestSubstring (): String {
         return bestSubstring
@@ -24,7 +28,7 @@ class DamerauLevenshteinMostSimilarSubstring (private val primaryString: String,
     }
 
     private fun findBestSubstringAnyLength () {
-        for (additionalLength in 0 .. maximumSubstringLength) {
+        for (additionalLength in 0 .. maximumDistance) {
             findBestSubstringFixedLength(additionalLength + compareStringLength)
         }
     }

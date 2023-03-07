@@ -24,15 +24,19 @@ object SpeechHandler {
     private var basicDeclarations = listOf("short", "int", "long", "byte", "float", "double", "String", "char",
                                         "bool", "object", "private", "public", "static", "const")
     private val homophoneChecker = Homophones(UserParameters.homophoneFile)
+    private var insertionContext: InsertionContext? = null
+    private var lookupElements: List<LookupElement>? = null
     fun startTranscription(speechConfig: SpeechConfig, audioConfig: AudioConfig, verbatim: Boolean) {
         _speechConfig = speechConfig
         _audioConfig = audioConfig
         if (verbatim) {
             Logger.write("Start verbatim transcription.")
-            insertDictation()
+            generateVoiceToCode(true)
         }
         else {
             codingModeEvent = true
+            lookupElements = null
+            insertionContext = null
             Logger.write("Start Autocomplete transcription.")
             DataManager.getInstance().dataContextFromFocusAsync.onSuccess {context: DataContext? ->
                 if (context != null) {
@@ -44,15 +48,29 @@ object SpeechHandler {
                     popupController?.scheduleAutoPopup(editor)
                 }
             }
+            Thread {
+                while (lookupElements == null || insertionContext == null) {
+                    Thread.sleep(500)
+                    Logger.write("Waiting for Autocomplete to finish, Lookup null ${lookupElements == null}, Context null ${insertionContext == null}")
+                }
+                generateVoiceToCode(false)
+            }.start()
         }
     }
-    fun insertDictation(autocompleteItems: List<LookupElement>? = null, verbatim: Boolean = true, insertionContext: InsertionContext? = null) {
+
+    fun setAutocompleteResults (autocompleteItems: List<LookupElement>, autocompleteContext: InsertionContext) {
+        lookupElements = autocompleteItems
+        insertionContext = autocompleteContext
+        Logger.write("Setting Elements ${lookupElements!!.size} and Context $insertionContext")
+    }
+
+    private fun generateVoiceToCode(verbatim: Boolean) {
         codingModeEvent = false
-        val speechRecognizer = generateRecognizer(autocompleteItems, verbatim)
+        val speechRecognizer = generateRecognizer(verbatim)
         val recognitionTask = speechRecognizer.recognizeOnceAsync()
         val recognitionResult = recognitionTask.get().text
         val transcribedText = if (verbatim)  camelCaseContraction(recognitionResult)
-                                else generateCodeFromTranscription(recognitionResult, autocompleteItems, insertionContext)
+                                else generateCodeFromTranscription(recognitionResult)
         Logger.write("Text recognized: $transcribedText.")
         DataManager.getInstance().dataContextFromFocusAsync.onSuccess {context: DataContext? ->
             if (context != null) {
@@ -68,7 +86,7 @@ object SpeechHandler {
         Logger.write("Finished handling speech-to-code input.")
         VoiceController.finishListening()
     }
-    private fun generateRecognizer(autocompleteItems: List<LookupElement>?, verbatim: Boolean): SpeechRecognizer {
+    private fun generateRecognizer(verbatim: Boolean): SpeechRecognizer {
         val speechRecognizer = SpeechRecognizer(_speechConfig, _audioConfig)
         val phraseListGrammar = PhraseListGrammar.fromRecognizer(speechRecognizer)
         if (verbatim) {
@@ -76,8 +94,8 @@ object SpeechHandler {
                 phraseListGrammar.addPhrase(word)
             }
         }
-        else if (autocompleteItems != null) {
-            for (element in autocompleteItems) {
+        else if (lookupElements != null) {
+            for (element in lookupElements!!) {
                 phraseListGrammar.addPhrase(element.toString())
             }
         }
@@ -99,7 +117,7 @@ object SpeechHandler {
         return camelCaseString
     }
 
-    private fun generateCodeFromTranscription (transcription: String, autocompleteItems: List<LookupElement>?, context: InsertionContext?): String {
+    private fun generateCodeFromTranscription (transcription: String): String {
         var code = ""
         Logger.write("Formatting $transcription.")
         var formattedString = removePunctuation(transcription).lowercase()
@@ -117,12 +135,12 @@ object SpeechHandler {
             Logger.write("${transcriptionStrings.size} variants found.")
             for (transcriptionString in transcriptionStrings) {
                 Logger.write("Searching for $transcriptionString.")
-                if (autocompleteItems != null && transcriptionString != "") {
-                    val autocompleteStrings: List<String> = autocompleteItems.map { it.toString() }
+                if (lookupElements != null && transcriptionString != "") {
+                    val autocompleteStrings: List<String> = lookupElements!!.map { it.toString() }
                     val matchIndex = findExactMatch(autocompleteStrings, transcriptionString)
                     if (matchIndex >= 0) {
-                        if (context != null) autocompleteItems[matchIndex].handleInsert(context)
-                        else code = autocompleteItems[matchIndex].toString()
+                        if (insertionContext != null) lookupElements!![matchIndex].handleInsert(insertionContext!!)
+                        else code = lookupElements!![matchIndex].toString()
                         Logger.write("Single or exact match found for $transcriptionString.")
                         break
                     }

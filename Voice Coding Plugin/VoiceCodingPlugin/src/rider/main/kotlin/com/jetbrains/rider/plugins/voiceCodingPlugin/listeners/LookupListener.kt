@@ -33,7 +33,8 @@ class LookupListener: LookupListener {
             val offset = OffsetMap(editor.document)
             val elementArray: Array<LookupElement> = _lookup!!.items.toTypedArray()
             val context = InsertionContext(offset, _completionChar, elementArray, file!!, editor, true)
-            SpeechHandler.insertDictation(_lookup!!.items, false, context)
+            //SpeechHandler.insertDictation(_lookup!!.items, false, context)
+            SpeechHandler.setAutocompleteResults(_lookup!!.items, context)
         }
     }
 }

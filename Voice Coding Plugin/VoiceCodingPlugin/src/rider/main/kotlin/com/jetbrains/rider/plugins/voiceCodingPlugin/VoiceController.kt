@@ -10,13 +10,14 @@ import kotlinx.coroutines.runBlocking
 object VoiceController {
     private var codingMode = true
     private var verbatimMode = false
-    private var listeningMode = false
+    var busyListening = false
+        private set
     private var controllerActive = false
 
     private const val audioFileName = UserParameters.audioFileName
     private val speechConfig = SpeechConfig.fromSubscription(UserParameters.azureSubscriptionKey, UserParameters.azureRegionKey)
-    private val audioConfig = AudioConfig.fromWavFileInput(audioFileName)
-    //private val audioConfig = AudioConfig.fromDefaultMicrophoneInput()
+    private val audioFileConfig = AudioConfig.fromWavFileInput(audioFileName)
+    private val audioMicrophoneConfig = AudioConfig.fromDefaultMicrophoneInput()
 
     //Turning off coding mode also disables verbatim mode
     fun toggleCodingMode() {
@@ -31,29 +32,22 @@ object VoiceController {
     }
 
     private fun startListening() = runBlocking {
-        listeningMode = true
+        busyListening = true
         Logger.write("Prepare to listen.")
         val microphoneHandler = MicrophoneHandler()
         val audioInputStream = microphoneHandler.startAudioInputStream()
         launch {
             Logger.write("Start listening.")
-            while (listeningMode) {
+            while (busyListening) {
                 delay (50)
                 if (microphoneHandler.detectNoise(audioInputStream)) {
                     Logger.write("Noise detected.")
                     break
                 }
             }
-            if (listeningMode) {
+            if (busyListening) {
                 microphoneHandler.startRecording(audioFileName, audioInputStream)
-                if (!codingMode) {
-                    Logger.write("Try to perform command.")
-                    IntentHandler.recognizeIntent(speechConfig, audioConfig)
-                }
-                else {
-                    Logger.write("Transcribe code.")
-                    SpeechHandler.startTranscription(speechConfig, audioConfig, verbatimMode)
-                }
+                handleAudioInput(audioFileConfig)
             }
             else {
                 microphoneHandler.stopRecording()
@@ -62,8 +56,20 @@ object VoiceController {
         }
     }
 
+    fun handleAudioInput(audioConfig: AudioConfig = audioMicrophoneConfig) {
+        busyListening = true
+        if (!codingMode) {
+            Logger.write("Try to perform command.")
+            IntentHandler.recognizeIntent(speechConfig, audioConfig)
+        }
+        else {
+            Logger.write("Transcribe code.")
+            SpeechHandler.startTranscription(speechConfig, audioConfig, verbatimMode)
+        }
+    }
+
     private fun stopController(){
-        listeningMode = false
+        busyListening = false
         controllerActive = false
         Logger.write("Stop voice controls.")
     }
@@ -73,7 +79,7 @@ object VoiceController {
         controllerActive = true
         val listeningThread = Thread {
             while (controllerActive) {
-                if (!listeningMode) startListening()
+                if (!busyListening) startListening()
                 Thread.sleep(500)
             }
         }
@@ -86,6 +92,8 @@ object VoiceController {
     }
 
     fun finishListening() {
-        listeningMode = false
+        busyListening = false
     }
+
+
 }

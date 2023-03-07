@@ -9,6 +9,8 @@ import kotlin.system.exitProcess
 class MicrophoneHandler {
     private val _recordingThreshold = UserParameters.recordingThreshold
     private lateinit var _line: TargetDataLine
+    var busy = false
+        private set
 
     private fun getAudioFormat(): AudioFormat {
         val sampleRate = 16000f
@@ -25,6 +27,7 @@ class MicrophoneHandler {
     fun stopRecording() {
         _line.stop()
         _line.close()
+        busy = false
     }
     fun detectNoise(audioInputStream: AudioInputStream): Boolean {
         val buffer = ByteArray(100)
@@ -53,7 +56,7 @@ class MicrophoneHandler {
         _line = AudioSystem.getLine(info) as TargetDataLine
         _line.open(format)
         _line.start()
-
+        busy = true
         return AudioInputStream(_line)
     }
 

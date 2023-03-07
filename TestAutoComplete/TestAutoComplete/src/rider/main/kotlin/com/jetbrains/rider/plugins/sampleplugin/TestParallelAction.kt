@@ -7,6 +7,7 @@ import com.intellij.ide.projectWizard.NewProjectWizardConstants
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.jetbrains.rdclient.editors.getPsiFile
@@ -22,7 +23,6 @@ class TestParallelAction: AnAction() {
     override fun actionPerformed(p0: AnActionEvent) {
         testFun(p0)
     }
-
     private fun testFun(event: AnActionEvent) = runBlocking {
         val project = event.getData(CommonDataKeys.PROJECT)
         val editor = event.getData(CommonDataKeys.EDITOR)
@@ -44,11 +44,11 @@ class TestParallelAction: AnAction() {
             directory.add(newFile)
         }
 
+
         launch {
             delay(500)
             popupController?.scheduleAutoPopup(editor)
-        }
-*/
+        }*/
         /*var test = "u _ and _ i _"
         test = test.split(" ").joinToString(""){ it ->
             it.replaceFirstChar {
@@ -57,8 +57,20 @@ class TestParallelAction: AnAction() {
             }
         }
         test = test[0].lowercase() + test.removePrefix(test[0].toString())
-        editor?.insertString("$test")*/
-        //editor?.moveToOffset(offset + 1 )
+        */
+        WaitFor.me = true
+        popupController?.scheduleAutoPopup(editor)
+        Thread {
+            while (WaitFor.me) Thread.sleep(500)
+            editor?.insertString("a")
+            editor?.moveToOffset(caretOffset + 1 )
+        }.start()
 
+    }
+
+    private fun testPopup(editor: Editor?, popupController: AutoPopupController?) = runBlocking() {
+        launch {
+            popupController?.scheduleAutoPopup(editor)
+        }
     }
 }

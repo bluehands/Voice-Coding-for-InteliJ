@@ -42,6 +42,7 @@ class TestLookupListener: LookupListener {
             val context = InsertionContext(offset, _completionChar, elementArray, file!!, editor, true)
             _lookup!!.items[0].handleInsert(context)*/
             //Messages.showErrorDialog("$currentCount elements found!", "Lookup")
+            WaitFor.me = false
         }
     }
 }

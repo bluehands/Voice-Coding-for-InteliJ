@@ -2,7 +2,7 @@ package com.jetbrains.rider.plugins.voiceCodingPlugin
 
 import java.io.File
 
-enum class MatchingAlgorithm { Hamming, DamerauLevenshtein }
+enum class MatchingAlgorithm { None, Hamming, DamerauLevenshtein }
 object UserParameters {
     val azureSubscriptionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/SubscriptionKey.txt").readText()
     val azureRegionKey = File("C:/Users/Public/Documents/VoiceCodingPlugin/RegionKey.txt").readText()
@@ -10,5 +10,5 @@ object UserParameters {
     const val homophoneFile = "C:/Users/Public/Documents/VoiceCodingPlugin/Homophones.txt"
     const val batchAudioDirectory = "C:/Users/Public/Documents/VoiceCodingPlugin/BatchRecordings"
     const val recordingThreshold = 4
-    val matchingAlgorithm = MatchingAlgorithm.Hamming
+    val matchingAlgorithm = MatchingAlgorithm.None
 }

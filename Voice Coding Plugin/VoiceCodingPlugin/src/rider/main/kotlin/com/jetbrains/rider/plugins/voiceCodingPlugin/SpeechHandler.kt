@@ -10,6 +10,7 @@ import com.jetbrains.rd.platform.util.project
 import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.DamerauLevenshteinMostSimilarSubstring
 import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.Homophones
 import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.HammingMostSimilarSubstring
+import com.jetbrains.rider.plugins.voiceCodingPlugin.similarityChecks.NoMatching
 import com.jetbrains.rider.test.scriptingApi.insertString
 import com.microsoft.cognitiveservices.speech.PhraseListGrammar
 import com.microsoft.cognitiveservices.speech.SpeechConfig
@@ -211,20 +212,22 @@ object SpeechHandler {
         val maximumDistance = maxOf(1, transcription.length / 5)
         for (index in autocompleteStrings.indices) {
             val element = autocompleteStrings[index]
-            if (element.length >= transcription.length) {
-                val mostSimilarSubstring = if (UserParameters.matchingAlgorithm == MatchingAlgorithm.DamerauLevenshtein)
-                                                DamerauLevenshteinMostSimilarSubstring(element, transcription, maximumDistance)
-                                            else HammingMostSimilarSubstring(element, transcription)
-                val bestString = mostSimilarSubstring.getBestSubstring()
-                val distance = mostSimilarSubstring.getBestDistance()
-                val stringIndex = mostSimilarSubstring.getResultIndex()
-                if (distance < currentDistance || (distance == currentDistance && stringIndex < currentIndex)) {
-                    bestCurrentString = bestString
-                    currentDistance = distance
-                    currentIndex = stringIndex
-                }
+            val mostSimilarSubstring = when (UserParameters.matchingAlgorithm) {
+                MatchingAlgorithm.DamerauLevenshtein -> DamerauLevenshteinMostSimilarSubstring(element, transcription, maximumDistance)
+                MatchingAlgorithm.Hamming -> HammingMostSimilarSubstring(element, transcription)
+                MatchingAlgorithm.None -> NoMatching(transcription)
+            }
+            val bestString = mostSimilarSubstring.getBestSubstring()
+            val distance = mostSimilarSubstring.getBestDistance()
+            val stringIndex = mostSimilarSubstring.getResultIndex()
+            if (distance < currentDistance || (distance == currentDistance && stringIndex < currentIndex)) {
+                bestCurrentString = bestString
+                currentDistance = distance
+                currentIndex = stringIndex
             }
         }
+        Logger.write("Best match is $bestCurrentString with distance $currentDistance. " +
+                        "\nMaximum allowed distance is $maximumDistance.")
         return if (currentDistance <= maximumDistance) bestCurrentString
                 else ""
     }

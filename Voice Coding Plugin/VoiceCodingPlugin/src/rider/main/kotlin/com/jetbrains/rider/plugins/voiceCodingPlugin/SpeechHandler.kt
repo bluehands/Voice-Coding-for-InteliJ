@@ -139,8 +139,8 @@ object SpeechHandler {
                     val autocompleteStrings: List<String> = lookupElements!!.map { it.toString() }
                     val matchIndex = findExactMatch(autocompleteStrings, transcriptionString)
                     if (matchIndex >= 0) {
-                        if (insertionContext != null) lookupElements!![matchIndex].handleInsert(insertionContext!!)
-                        else code = lookupElements!![matchIndex].toString()
+                        //if (insertionContext != null) lookupElements!![matchIndex].handleInsert(insertionContext!!)
+                        code = lookupElements!![matchIndex].toString()
                         Logger.write("Single or exact match found for $transcriptionString.")
                         break
                     }

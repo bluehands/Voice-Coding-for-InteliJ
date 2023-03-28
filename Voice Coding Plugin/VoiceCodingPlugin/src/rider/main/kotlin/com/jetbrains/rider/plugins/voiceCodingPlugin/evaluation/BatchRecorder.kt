@@ -43,6 +43,9 @@ object BatchRecorder {
                         Logger.write("Recording batch file $i.")
                         microphoneHandler.startRecording(filename, audioInputStream)
                     }
+                    else {
+                        microphoneHandler.stopRecording()
+                    }
                 }
             }
         }

@@ -148,12 +148,12 @@ object SpeechHandler {
                     else if (matchIndex == -1) {
                         code = transcriptionString
                         Logger.write("Multiple matches found, insert $transcriptionString.")
+                        break
                     }
-                    else if (matchIndex == -2) {
+                    else if (matchIndex == -2 && code == "") {
                         code = findClosestMatch(transcriptionString, autocompleteStrings)
                         Logger.write("Try to match with distance. Best match: $code")
                     }
-                    else code = ""
                 }
                 else if (transcriptionString == "") {
                     Logger.write("Error: Empty transcription.")
@@ -161,7 +161,6 @@ object SpeechHandler {
                 else {
                     Logger.write("Error: Missing Autocomplete-Elements.")
                 }
-                if (code != "") break
             }
         }
         return code

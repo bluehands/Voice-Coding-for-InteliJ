@@ -7,13 +7,13 @@ public enum SetUp
 
 public class GameMaster
 {
-    private GameBoard _gameBoard;
-    private Visualizer _visualizer;
+    private GameBoard board;
+    private Visualizer visual;
 
     public GameMaster()
     {
-        _gameBoard = BlockSetup();
-        _visualizer = new Visualizer(_gameBoard);
+        board = BlockSetup();
+        visual = new Visualizer(board);
     }
     
     public GameMaster(string setUp)
@@ -21,55 +21,82 @@ public class GameMaster
         switch (setUp)
         {
             case "basic":
-                _gameBoard = BlinkerSetup();
+                board = BlinkerSetup();
                 break;
             case "slider":
-                _gameBoard = SliderSetup();
+                board = SliderSetup();
                 break;
             case "dissolver":
-                _gameBoard = DissolverSetup();
+                board = DissolverSetup();
                 break;
             case "lwss":
-                _gameBoard = LwSsSetup();
+                board = LwSsSetup();
                 break;
             default: 
-                _gameBoard = BlockSetup();
+                board = BlockSetup();
                 break;
         }
-        _visualizer = new Visualizer(_gameBoard);
+        visual = new Visualizer(board);
     }
 
     public string NextGeneration()
     {
         var nullError = false;
-        for (var x = 0; x <= _gameBoard.MaximumXIndex(); x++)
+        for (var x = 0; x <= board.MaximumXIndex(); x++)
         {
-            for (var y = 0; y <= _gameBoard.MaximumYIndex(); y++)
+            for (var y = 0; y <= board.MaximumYIndex(); y++)
             {
-                var neighbors = _gameBoard.GetNeighbors(x, y);
+                var neighbors = board.GetNeighbors(x, y);
                 if (neighbors == null)
                 {
                     nullError = true;
                     break;
                 }
-                _gameBoard.GetCell(x,y).CalculateNextGeneration(neighbors);
+
+                board.GetCell(x, y).CalculateNextGeneration(neighbors);
             }
         }
 
-        if (nullError) return _visualizer.GenerateVisualization() + "\nError: Could not calculate next generation!";
-        for (int x = 0; x <= _gameBoard.MaximumXIndex(); x++)
+        if (nullError) return visual.GenerateVisualization() + "\nError: Could not calculate next generation!";
+        for (int x = 0; x <= board.MaximumXIndex(); x++)
         {
-            for (int y = 0; y <= _gameBoard.MaximumYIndex(); y++)
+            for (int y = 0; y <= board.MaximumYIndex(); y++)
             {
-                _gameBoard.GetCell(x, y).StartNextGeneration();
+                board.GetCell(x, y).StartNextGeneration();
             }
         }
-        return _visualizer.GenerateVisualization();
+
+        return visual.GenerateVisualization();
+    }
+
+    /*public string NextGeneration2()
+    {
+        var nullError = false;
+        for (int i = 0; i < board.MaximumXIndex(); i++)
+        {
+            for (int j = 0; j < board.MaximumYIndex(); j++)
+            {
+                var neighbor = board.GetNeighbors(i, j);
+                if (neighbor == null)
+                {
+                    nullError = true;
+                    break;
+                }
+                board.GetCell(i, j).CalculateNextGeneration(neighbor);
+            }
+        }
+        return "";
+    }*/
+    public string NextGeneration2()
+    {
+        var nullError = false;
+        
+        return "";
     }
 
     public string CurrentGeneration()
     {
-        return _visualizer.GenerateVisualization();
+        return visual.GenerateVisualization();
     }
 
     private GameBoard BlockSetup()
@@ -82,6 +109,18 @@ public class GameMaster
         return gameBoard;
     }
 
+    // private GameBoard TestSetup()
+    // {
+    //     var gameBoard = new GameBoard(6, 6);
+    //     gameBoard.GetCell(2, 2).Alive = true;
+    //     gameBoard.GetCell(2, 3).Alive = true;
+    //     gameBoard.GetCell(3, 2).Alive = true;
+    //     gameBoard.GetCell(3, 3).Alive = true;
+    //     return gameBoard;
+    // }
+   
+    
+    
     private GameBoard BlinkerSetup()
     {
         var gameBoard = new GameBoard(5, 5);

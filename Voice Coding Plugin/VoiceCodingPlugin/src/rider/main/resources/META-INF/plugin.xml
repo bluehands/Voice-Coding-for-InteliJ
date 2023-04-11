@@ -24,8 +24,8 @@
                     description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt D"/>
             </action>
-            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction"
-                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.TestAction" text="Start/Stop VoiceCodingPlugin"
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVoiceControls"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVoiceControls" text="Start/Stop VoiceCodingPlugin"
                     description="Start/Stop listening to the microphone for voice input.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
             </action>
@@ -34,25 +34,6 @@
                     text="Toggle Coding Mode" description="Toggle Coding Mode on or off.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
             </action>
-        </group>
-        <group
-                id="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.ActionGroup"
-                text="Evaluate VoiceCoding"
-                popup="true">
-                <add-to-group group-id="ToolsMenu" anchor="first"/>
-                <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.StartBatchRecordingAction"
-                        class="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.StartBatchRecordingAction"
-                        text="Start Batch Recording" description="Start a recording batch to use for evaluation.">
-                </action>
-                <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.StopBatchRecordingAction"
-                        class="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.StopBatchRecordingAction"
-                        text="Stop Batch Recording" description="Stop recording the batch.">
-                </action>
-                <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.PerformBatchedAction"
-                        class="com.jetbrains.rider.plugins.voiceCodingPlugin.evaluation.evaluationActions.PerformBatchedAction"
-                        text="Handle Batched" description="Handle the next recording in the recording batch.">
-                    <keyboard-shortcut keymap="$default" first-keystroke="shift alt H"/>
-                </action>
         </group>
     </actions>
 

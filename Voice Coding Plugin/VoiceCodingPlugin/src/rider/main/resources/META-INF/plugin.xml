@@ -2,15 +2,14 @@
   <id>com.jetbrains.rider.plugins.voicecodingplugin</id>
   <name>VoiceCodingPlugin</name>
   <version>0.7</version>
-  <vendor url="https://project-url">Author</vendor>
+  <vendor url="https://github.com/PhilippRCB/VoiceToAutoCode">Philipp-Rene Bott</vendor>
   <idea-version since-build="#IU-223.7571.182"/> <!-- until-build="_PLACEHOLDER_" -->
   <depends>com.intellij.modules.rider</depends>
 
-  <!-- description -->
-<!-- [CDATA[
-<p>"This Plugin let's you "</p>
-]] -->
-  <!--/description -->
+  <description><![CDATA[
+    <p>"Plugin for transcribing voice input into program code. The transcription is powered by the autocomplete suggestions."</p>
+    <p>"An azure voice recognition resource is required to use this plugin."</p>
+  ]]></description>
 
     <actions>
         <group
@@ -34,11 +33,11 @@
                     description="Stop listening to the microphone for voice input.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>
             </action>
-            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
+            <!--<action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
                     class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
                     text="Switch Coding/Commands" description="Switch between Coding and Commands.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
-            </action>
+            </action>-->
             <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
                     class="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
                     text="Set Credentials" description="Set credentials for Azure Voice recognition .">

@@ -46,8 +46,16 @@ object VoiceController {
                 }
             }
             if (busyListening) {
-                microphoneHandler.startRecording(audioFileName, audioInputStream)
-                handleAudioInput(audioFileConfig)
+                if (UserParameters.useBufferFile) {
+                    Logger.write("Recognition via buffer file.")
+                    microphoneHandler.startRecording(audioFileName, audioInputStream)
+                    handleAudioInput(audioFileConfig)
+                }
+                else {
+                    Logger.write("Direct recognition via microphone.")
+                    microphoneHandler.stopRecording()
+                    handleAudioInput(audioMicrophoneConfig)
+                }
             }
             else {
                 microphoneHandler.stopRecording()
@@ -56,7 +64,7 @@ object VoiceController {
         }
     }
 
-    fun handleAudioInput(audioConfig: AudioConfig = audioMicrophoneConfig) {
+    private fun handleAudioInput(audioConfig: AudioConfig = audioMicrophoneConfig) {
         busyListening = true
         if (!codingMode) {
             Logger.write("Try to perform command.")

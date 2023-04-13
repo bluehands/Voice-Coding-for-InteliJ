@@ -17,6 +17,7 @@ object UserParameters {
     val matchingAlgorithm = MatchingAlgorithm.None
     val credentialKeyAttribute = CredentialAttributes("AzureSubscriptionKey")
     val credentialRegionAttribute = CredentialAttributes("AzureRegionKey")
+    val useBufferFile = true
 
     init {
         updateAzureKeys()

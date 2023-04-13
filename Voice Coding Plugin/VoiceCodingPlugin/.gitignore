@@ -20,3 +20,5 @@ output
 .vs
 _ReSharper*
 _dotTrace*
+/BufferFile.wav
+/Homophones.txt

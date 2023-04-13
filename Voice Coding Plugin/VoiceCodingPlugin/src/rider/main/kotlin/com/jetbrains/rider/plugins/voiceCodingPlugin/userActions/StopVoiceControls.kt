@@ -4,9 +4,8 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.rider.plugins.voiceCodingPlugin.VoiceController
 
-class ToggleVoiceControls: AnAction() {
+class StopVoiceControls: AnAction() {
     override fun actionPerformed(p0: AnActionEvent) {
-        VoiceController.toggleController()
+        VoiceController.stopController()
     }
-
 }

@@ -24,15 +24,24 @@
                     description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt D"/>
             </action>
-            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVoiceControls"
-                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleVoiceControls" text="Start/Stop VoiceCodingPlugin"
-                    description="Start/Stop listening to the microphone for voice input.">
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.StartVoiceControls"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.StartVoiceControls" text="Start VoiceCodingPlugin"
+                    description="Start listening to the microphone for voice input.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.StopVoiceControls"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.StopVoiceControls" text="Stop VoiceCodingPlugin"
+                    description="Stop listening to the microphone for voice input.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>
             </action>
             <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
                     class="com.jetbrains.rider.plugins.voiceCodingPlugin.userActions.ToggleCodingModeAction"
-                    text="Toggle Coding Mode" description="Toggle Coding Mode on or off.">
+                    text="Switch Coding/Commands" description="Switch between Coding and Commands.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
+                    text="Set Credentials" description="Set credentials for Azure Voice recognition .">
             </action>
         </group>
     </actions>

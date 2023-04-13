@@ -68,13 +68,13 @@ object VoiceController {
         }
     }
 
-    private fun stopController(){
+    fun stopController(){
         busyListening = false
         controllerActive = false
         Logger.write("Stop voice controls.")
     }
 
-    private fun startController() {
+    fun startController() {
         Logger.write("Start voice controls.")
         controllerActive = true
         val listeningThread = Thread {
@@ -84,11 +84,6 @@ object VoiceController {
             }
         }
         listeningThread.start()
-    }
-
-    fun toggleController(){
-        if (controllerActive) stopController()
-        else startController()
     }
 
     fun finishListening() {

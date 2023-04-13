@@ -38,9 +38,13 @@
                     text="Switch Coding/Commands" description="Switch between Coding and Commands.">
                 <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
             </action>-->
+            <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.settings.SettingsAction"
+                    class="com.jetbrains.rider.plugins.voiceCodingPlugin.settings.SettingsAction"
+                    text="Settings" description="Settings for the Plugin.">
+            </action>
             <action id="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
                     class="com.jetbrains.rider.plugins.voiceCodingPlugin.security.SetAzureKeysAction"
-                    text="Set Credentials" description="Set credentials for Azure Voice recognition .">
+                    text="Set Credentials" description="Set credentials for Azure Voice recognition.">
             </action>
         </group>
     </actions>

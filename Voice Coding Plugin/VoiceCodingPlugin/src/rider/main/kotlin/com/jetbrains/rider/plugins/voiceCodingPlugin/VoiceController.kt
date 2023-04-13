@@ -14,7 +14,7 @@ object VoiceController {
         private set
     private var controllerActive = false
 
-    private const val audioFileName = UserParameters.audioFileName
+    private val audioFileName = UserParameters.audioFileName
     private val speechConfig = SpeechConfig.fromSubscription(UserParameters.azureSubscriptionKey, UserParameters.azureRegionKey)
     private val audioFileConfig = AudioConfig.fromWavFileInput(audioFileName)
     private val audioMicrophoneConfig = AudioConfig.fromDefaultMicrophoneInput()

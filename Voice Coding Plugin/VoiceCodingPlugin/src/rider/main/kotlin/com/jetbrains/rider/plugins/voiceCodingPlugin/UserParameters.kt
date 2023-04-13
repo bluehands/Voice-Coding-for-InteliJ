@@ -42,13 +42,13 @@ object UserParameters {
     }
 
     fun loadSettings(){
-        useBufferFile = PropertiesComponent.getInstance().getBoolean(useBufferName, true)
+        useBufferFile = PropertiesComponent.getInstance().getBoolean(useBufferName)
         matchingAlgorithm = when (PropertiesComponent.getInstance().getInt(matchingName, 0)){
             0 -> MatchingAlgorithm.None
             1 -> MatchingAlgorithm.Hamming
             2 -> MatchingAlgorithm.DamerauLevenshtein
             else -> MatchingAlgorithm.None
         }
-        recordingThreshold = Integer.parseInt(PropertiesComponent.getInstance().getValue(thresholdName, "4"))
+        recordingThreshold = PropertiesComponent.getInstance().getInt(thresholdName, 4)
     }
 }

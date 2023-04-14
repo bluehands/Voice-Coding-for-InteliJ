@@ -1,0 +1,56 @@
+<idea-plugin require-restart="true">
+  <id>com.jetbrains.rider.plugins.autocompleteVoiceCoding</id>
+  <name>AutocompleteVoiceCoding</name>
+  <version>1.0</version>
+  <vendor url="https://github.com/PhilippRCB/VoiceToAutoCode">Philipp-Rene Bott</vendor>
+  <idea-version since-build="#IU-223.7571.182"/> <!-- until-build="_PLACEHOLDER_" -->
+  <depends>com.intellij.modules.rider</depends>
+
+  <description><![CDATA[
+    <p>"Plugin for transcribing voice input into program code. The transcription is powered by the autocomplete suggestions."</p>
+    <p>"An azure voice recognition resource is required to use this plugin."</p>
+  ]]></description>
+
+    <actions>
+        <group
+            id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.ActionGroup"
+            text="VoiceCodingPlugin"
+            popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.ToggleVerbatimModeAction"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.ToggleVerbatimModeAction"
+                    text="Toggle Verbatim Mode"
+                    description="Toggle verbatim mode on or off, verbatim mode only works in coding mode">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt D"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.StartVoiceControls"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.StartVoiceControls" text="Start VoiceCodingPlugin"
+                    description="Start listening to the microphone for voice input.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt V"/>
+            </action>
+            <action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.StopVoiceControls"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.StopVoiceControls" text="Stop VoiceCodingPlugin"
+                    description="Stop listening to the microphone for voice input.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>
+            </action>
+            <!--<action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.ToggleCodingModeAction"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.userActions.ToggleCodingModeAction"
+                    text="Switch Coding/Commands" description="Switch between Coding and Commands.">
+                <keyboard-shortcut keymap="$default" first-keystroke="shift alt C"/>
+            </action>-->
+            <action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.settings.SettingsAction"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.settings.SettingsAction"
+                    text="Settings" description="Settings for the Plugin.">
+            </action>
+            <action id="com.jetbrains.rider.plugins.autocompleteVoiceCoding.security.SetAzureKeysAction"
+                    class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.security.SetAzureKeysAction"
+                    text="Set Credentials" description="Set credentials for Azure Voice recognition.">
+            </action>
+        </group>
+    </actions>
+
+    <projectListeners>
+        <listener class="com.jetbrains.rider.plugins.autocompleteVoiceCoding.listeners.LookupManagerListener"
+                  topic="com.intellij.codeInsight.lookup.LookupManagerListener"/>
+    </projectListeners>
+</idea-plugin>

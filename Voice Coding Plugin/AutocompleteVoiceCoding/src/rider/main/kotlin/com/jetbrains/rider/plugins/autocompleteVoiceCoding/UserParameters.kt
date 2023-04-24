@@ -9,11 +9,12 @@ enum class MatchingAlgorithm { None, Hamming, DamerauLevenshtein }
 object UserParameters {
     val credentialKeyAttribute = CredentialAttributes("AzureSubscriptionKey")
     val credentialRegionAttribute = CredentialAttributes("AzureRegionKey")
-    var documentdir = "C:/Users/Public/Documents/VoiceCodingPlugin"
+    var documentDirectory = ""
         private set
-    var audioFileName = "$documentdir/BufferFile.wav"
+    const val documentDirectoryName = "documentDirectory"
+    var audioFileName = "$documentDirectory/BufferFile.wav"
         private set
-    var homophoneFile = "$documentdir/Homophones.txt"
+    var homophoneFile = "$documentDirectory/Homophones.txt"
         private set
     var azureSubscriptionKey = ""
         private set
@@ -30,8 +31,6 @@ object UserParameters {
         private set
 
     init {
-        val path = File(documentdir)
-        if (!path.exists()) path.mkdir()
         updateAzureKeys()
         loadSettings()
     }
@@ -50,5 +49,8 @@ object UserParameters {
             else -> MatchingAlgorithm.None
         }
         recordingThreshold = PropertiesComponent.getInstance().getInt(thresholdName, 4)
+        documentDirectory = PropertiesComponent.getInstance().getValue(documentDirectoryName, "C:/Users/Public/Documents/VoiceCodingPlugin")
+        val path = File(documentDirectory)
+        if (!path.exists()) path.mkdir()
     }
 }

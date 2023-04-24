@@ -14,6 +14,7 @@ class SettingsAction: AnAction() {
             PropertiesComponent.getInstance().setValue(UserParameters.thresholdName, noiseVal, 4)
             PropertiesComponent.getInstance().setValue(UserParameters.matchingName, dialog.matchingAlgo.selectedIndex, 0)
             PropertiesComponent.getInstance().setValue(UserParameters.useBufferName, dialog.recordingCheckbox.isSelected)
+            PropertiesComponent.getInstance().setValue(UserParameters.documentDirectoryName, dialog.directoryField.text)
             UserParameters.loadSettings()
         }
     }
